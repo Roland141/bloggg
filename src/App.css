@@ -1,0 +1,11 @@
+.home{
+  background-image: url("https://res.cloudinary.com/dpkqa0kgn/image/upload/v1732884127/simon-berger-twukN12EN7c-unsplash_azpsrp.jpg");
+  min-height: '100vh';  
+  background-color: aqua;
+
+}
+.myavatar{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
