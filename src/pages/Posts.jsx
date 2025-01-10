@@ -5,6 +5,7 @@ import { MyCard } from '../components/MyCard'
 import { CategoriesCheck } from '../components/CategoriesCheck'
 import { Checkbox } from '@mui/material'
 import { useSearchParams  } from 'react-router-dom'
+import { SearchBox } from '../components/SearchBox'
 export default function Posts() {
   const [searchParams] = useSearchParams()
   const [posts, setPosts] = useState([])
@@ -20,7 +21,9 @@ export default function Posts() {
   return (
     <>
     
-   <CategoriesCheck selCateg={selCateg} setSelCateg={setSelCateg}/>
+   
+    <CategoriesCheck selCateg={selCateg} setSelCateg={setSelCateg}/>
+    {posts && <SearchBox items={posts.map(obj=>({id:obj.id,name:obj.title}))}/>}
       <div
         className="min-h-screen bg-cover bg-center p-6 flex justify-center items-center"
         style={{
@@ -29,6 +32,7 @@ export default function Posts() {
           backgroundSize: 'cover',
         }}
       >
+       
         <div className="flex flex-wrap justify-center gap-8 w-full">
           {posts.map(obj => (
             <MyCard key={obj.id} {...obj} />

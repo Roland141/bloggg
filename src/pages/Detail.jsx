@@ -54,7 +54,10 @@ export const Detail = () => {
 	  </div>
 	  <button className='btn btn-secondary' onClick={()=>navigate('/posts')}>Return</button>
 		{user && post && (user.uid==post.userId) &&
+		<>
 			<button><MdDelete onClick={handleDelete}/></button>
+			<button onClick={()=>navigate('/update/'+post.id)}>update</button>
+			</>
 		}
 	</div>
     </div>

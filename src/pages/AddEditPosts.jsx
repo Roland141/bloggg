@@ -7,10 +7,12 @@ import { useForm } from 'react-hook-form'
 import { BarLoader } from 'react-spinners'
 import { Story } from '../components/Story.jsx'
 import { uploadFile } from '../utility/uploadFile.js'
-import { addPost } from '../utility/crudUtility.js'
+import { addPost, readPosts, updatePost } from '../utility/crudUtility.js'
 import { CategContext } from '../context/CategContext.jsx'
 import { CategDropdown } from '../components/CategDropDown.jsx'
 import { Alerts } from '../components/Alerts.jsx'
+import { useParams } from 'react-router-dom'
+import { useEffect } from 'react'
 
 export const AddEditPosts=()=> {
   const {categories} = useContext(CategContext)
@@ -20,14 +22,39 @@ export const AddEditPosts=()=> {
   const [photo,setPhoto]  = useState(null)
   const [story,setStory]  = useState(null)
   const [selCateg,setSelCateg] = useState(null)
+  const [post,setPost] = useState(null)
   console.log(categories);
-  
-  const { register,handleSubmit,formState: { errors },reset} = useForm();
+  const params = useParams()
+  const { register,handleSubmit,formState: { errors },reset,setValue} = useForm();
   if(!user) return <Home/>
-  
+  useEffect(()=>{
+    if(params?.id) readPosts(params.id,setPost)
+  },[params?.id])
+  console.log(post);
+  useEffect(()=>{
+  if(post){
+    setValue("title",post.title)
+    setSelCateg(post.category)
+    setStory(post.story)
+  }
+},[post])
+
   const onSubmit =async (data)=>{
     //console.log(data.displayName);
+    if(params.id){
+      //update
+      try{
+      updatePost(params.id,{...data,category,story})
+    }catch(error){
+      console.log();
+      
+    }finally{
+      
+    }
+    }else{
     
+      //insert
+      
     setLoading(true)
     let newPostData = {
       ...data,
@@ -60,7 +87,7 @@ export const AddEditPosts=()=> {
     finally{
       setLoading(false)
     }
-    
+  }
   }
   
   return (
@@ -68,13 +95,13 @@ export const AddEditPosts=()=> {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div>
         <label htmlFor="">A bejegyzés címe: </label>
-        <input {...register('title', {required:true}) } type='text' />
+        <input {...register('title', {required:!params.id}) } type='text' />
         <p className='text-danger'>{errors?.title&& 'A cím megadása kötelező'}</p>
       </div>
     <div>
       <CategDropdown categories={categories} setSelCateg={setSelCateg} selCateg={selCateg}/>
     <Story setStory={setStory} uploaded={uploaded}/>
-    <input type='file' {...register('file',{ required:true,
+    <input disabled={params.id} type='file' {...register('file',params.id?{}:{ required:true,
       validate:(value)=>{
         if(!value[0]) return true
         const acceptedFormats=['jpg','png','webp']
